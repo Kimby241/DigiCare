@@ -1,3 +1,15 @@
+// Sandwich Class Camp 2015 - Deuxieme session
+//
+// Par Kimberley POBA VANZI - Nafissa IRO OUSMANE - Jihane CHAWKI
+// Master I - Développeur d'application (ETNA)
+
+// Ajout des variables pour le canvas
+var canvas;
+var context;
+var canvasWidth = 450;
+var canvasHeight = 450;
+
+// Ajout de la classe sauvegarde le repère (Carré)
 var repere = {
   p1:[],
   p2:[],
@@ -7,6 +19,8 @@ var repere = {
     return Math.abs((((this.p1.x - this.p3.x) * (this.p2.y - this.p4.y)) - ((this.p2.x - this.p4.x) * (this.p1.y - this.p3.y))) / 2);
   }
 }
+
+// Ajout des variables nécessaire à la sauegarde des contours de la plaie
 var clickX = new Array();
 var clickY = new Array();
 var clickDrag = new Array();
@@ -16,10 +30,12 @@ var clickColor = new Array();
 
 /* Ajout des variables pour les couleurs */
 var fillBase = "rgba(241, 148, 111, 0.55)";
+var fillPX = "rgba(200, 200, 100, 125)";
 var colorPurple = "#cb3594";
 var colorGreen = "#659b41";
 var colorYellow = "#ffcf33";
 var colorBrown = "#986928";
+var colorErase = "rgba(255, 255, 255, 0.10)";
 var curColor = colorPurple;
 var clickColor = new Array();
 
@@ -27,47 +43,23 @@ var clickColor = new Array();
 var curSize = "normal";
 var clickSize = new Array();
 var editContour = false;
+var editFill = false;
+
+/* Ajout variables tool (crayon ou gomme) */
+var clickTool = new Array();
+var curTool = "crayon";
 
 /* Image de fond */
 var outlineImage = new Image();
 
+// Autres variable
+var curLoadResNum = 0;
+var crayonTextureImage = new Image();
+var totalLoadResources = 8;
+
 var editRep = true;
 
 var img = document.getElementById("lard");
-
-/* Set color */
-function SetGreen () {
-  curColor = colorGreen;
-}
-
-function SetPurple () {
-  curColor = colorPurple;
-}
-
-function SetYellow () {
-  curColor = colorYellow;
-}
-
-function SetBrown () {
-  curColor = colorBrown;
-}
-
-/* Set size */
-function SetSmall () {
-  curSize = "small";
-}
-
-function SetNormal () {
-  curSize = "normal";
-}
-
-function SetLarge () {
-  curSize = "large";
-}
-
-function SetHuge () {
-  curSize = "huge";
-}
 
 function addClick(x, y, dragging)
 {
@@ -75,7 +67,11 @@ function addClick(x, y, dragging)
   clickY.push(y);
   clickDrag.push(dragging);
   clickSize.push(curSize);
-  clickColor.push(curColor);
+  if(curTool == "eraser"){
+    clickColor.push(curColor);
+  }else{
+    clickColor.push(curColor);
+  }
 }
 
 function clearRepere () {
@@ -92,6 +88,8 @@ function clearRepere () {
 
 function saveRepere () {
   editContour = true;
+  document.getElementById("etape1").style.display = "none";
+  document.getElementById("etape2").style.display = "inline";
   document.getElementById("menu_edit_repere").style.display = "none";
   document.getElementById("menu_edit_contour").style.display = "inline";
   clearC();
@@ -206,7 +204,14 @@ function clearCanvas()
 var it = 1;
 var blocked = 1;
 
-$('#repere').mousedown(function () {
+$( document ).ready(function() {
+  document.getElementById("etape1").style.display = "none";
+  document.getElementById("etape2").style.display = "none";
+});
+
+$('#repere').mousedown(function ()
+{
+  document.getElementById("etape1").style.display = "inline";
   var canvasDiv = document.getElementById('canvasDiv');
     canvas = document.createElement('canvas');
     canvas.setAttribute('width', canvasWidth);
@@ -289,9 +294,11 @@ $('#repere').mousedown(function () {
     });
 
     $('#canvas').mousemove(function(e){
-      if(paint && blocked == 0 && editContour == true){
+      if(paint && blocked == 0 && (editContour == true || editFill == true)){
         if(it > 4 && editContour == true)
           curSize = "small";
+        if(it > 4 && editFill == true)
+          curSize = "large";
         addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
         redraw();
         drawRep();
@@ -314,110 +321,6 @@ $('#repere').mousedown(function () {
     document.getElementById("menu_edit_repere").style.display = "inline";
 });
 
-/*$(document).ready(function() {
-    var canvasDiv = document.getElementById('canvasDiv');
-    canvas = document.createElement('canvas');
-    canvas.setAttribute('width', canvasWidth);
-    canvas.setAttribute('height', canvasHeight);
-    canvas.setAttribute('id', 'canvas');
-    canvasDiv.appendChild(canvas);
-    if (img.width > img.height)
-    {
-      document.getElementById("canvas").style.backgroundSize = "100% auto";
-    }
-    else
-    {
-      document.getElementById("canvas").style.backgroundSize = "auto 100%";
-    }
-    if(typeof G_vmlCanvasManager != 'undefined') {
-      canvas = G_vmlCanvasManager.initElement(canvas);
-    }
-    context = canvas.getContext("2d");
-
-    // Load images
-    // -----------
-    //outlineImage.src = "images/bl.jpg";
-    outlineImage.onload = function() { 
-        resourceLoaded();
-      };
-    
-
-    // Add mouse events
-    // ----------------
-    $('#canvas').mousedown(function(e){
-    var mouseX = e.pageX - this.offsetLeft;
-    var mouseY = e.pageY - this.offsetTop;
-    
-    paint = true;
-    addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
-    
-
-    if (it == 1) 
-      {
-        it++;
-        repere.p1.x = mouseX;
-        repere.p1.y = mouseY;
-        redraw();
-      }
-    else if (it == 2) 
-      {
-        it++;
-        repere.p2.x = mouseX;
-        repere.p2.y = mouseY;
-        redraw();
-      }
-    else if (it == 3) 
-      {
-        it++;
-        repere.p3.x = mouseX;
-        repere.p3.y = mouseY;
-        redraw();
-      }
-    else if (it == 4)
-      {
-        it++;
-        repere.p4.x = mouseX;
-        repere.p4.y = mouseY;
-        var div = document.getElementById("coord");
-        node = document.createTextNode("val = " + repere.surface());
-        para = document.createElement("p");
-        para.appendChild(node);
-        div.appendChild(para);
-        curColor = colorGreen;
-        curSize = "small";
-        redraw();
-        drawRep();
-      }
-    else
-    {
-      redraw();
-      drawRep();
-    }
-    
-    });
-
-    $('#canvas').mousemove(function(e){
-      if(paint && blocked == 0){
-        if(it > 4 && edit == false)
-          curSize = "small";
-        addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
-        redraw();
-        drawRep();
-      }
-    });
-
-    $('#canvas').mouseup(function(e){
-      if (blocked == 1 && it > 4)
-        blocked = 0;
-      paint = false;
-    });
-
-    $('#canvas').mouseleave(function(e){
-        paint = false;
-    });
-    outlineImage.src = "images/bl.jpg";
-});*/
-
 function drawRep() 
 {
   context.beginPath();              
@@ -435,10 +338,8 @@ function drawRep()
 function redraw(){
   context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
   
-  /*context.strokeStyle = "#df4b26";*/
   clearCanvas();
   context.lineJoin = "round";
-  /*context.lineWidth = 5;*/
   var radius;
   for(var i=0; i < clickX.length; i++) {
     if(clickSize[i] == "small"){
@@ -467,6 +368,11 @@ function redraw(){
      context.lineWidth = radius;
      context.stroke();
   }
+  if(curTool == "crayon") {
+    context.globalAlpha = 0.4;
+    context.drawImage(crayonTextureImage, 0, 0, canvasWidth, canvasHeight);
+  }
+  context.globalAlpha = 1;
 }
 
 function is_green (tab, pos) 
@@ -550,4 +456,13 @@ function resourceLoaded()
   if(++curLoadResNum >= totalLoadResources){
     redraw();
   }
+}
+
+function modifContour()
+{
+  editContour = true;
+  editFill = false;
+  curTool = "crayon";
+  curSize = "small";
+  curColor = colorGreen;
 }

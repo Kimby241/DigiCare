@@ -1,55 +1,25 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>HTML5 Create HTML5 Canvas JavaScript Drawing App Example</title>
-    <style type="text/css"> 
-      canvas
-      {
-        border:solid 1px;
-        /*background-image:url("images/bl.jpg");
-        background-repeat:no-repeat;*/
-        max-width: 500px;
-        background-position: 50% 50%;
-      }
-      #canvasDiv
-      {
-        width: 500px;
-        height: 500px;
-      }
-
-      ul#menu_edit_repere li, ul#menu_edit_contour li
-      { 
-      display : inline;
-      padding : 0 0.5em;
-      }
-      ul#menu_edit_repere, ul#menu_edit_contour
-      {
-      list-style-type : none;
-      width: 500px;
-      display: none;
-      }
-
-   </style> 
+  <link rel="stylesheet" type="text/css" href="style.css">
+    <title>DigiCare - MAincare</title>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
     <!--[if IE]><script type="text/javascript" src="excanvas.js"></script><![endif]-->
-    <script type="text/javascript" src="html5-canvas-drawing-app.js"></script>
   </head>
   <body>
-    <img id="lard" src="images/bl.jpg" alt=""><br/>
+<img id="lard" src="images/bl.jpg" alt=""><br/>
     <button onclick="clearC();">clear</button>
     <button id="repere" onclick="drawContour();">Contour</button>
-    <p>Choose color: 
-      <button onclick="SetGreen();">Green</button>
-      <button onclick="SetPurple();">Purple</button>
-      <button onclick="SetYellow();">Yellow</button>
-      <button onclick="SetBrown();">Brown</button>
-    </p>
-    <p>Choose size: 
-      <button onclick="SetSmall();">Small</button>
-      <button onclick="SetNormal();">Normal</button>
-      <button onclick="SetLarge();">Large</button>
-      <button onclick="SetHuge();">Huge</button>
-    </p>
+    <hr>
+    <div id="etape1" style="display=none">
+      <h1>1 - Selectionner les coins du repere</h1>
+      <img src="images/bl.jpg" alt=""><br/>
+    </div>
+
+    <div id="etape2" style="display=none">
+      <h1>2 - Dessinez le contour de la plaie</h1>
+    </div>
+    
     <ul id="menu_edit_repere">
       <li><button onclick="clearRepere();">Corriger</button></li>
       <li><button onclick="saveRepere();">Valider</button></li>
@@ -57,7 +27,6 @@
 
     <ul id="menu_edit_contour">
       <li><button onclick="modifContour();">Contour</button></li>
-      <li><button onclick="modifFill();">Remplissage</button></li>
       <li><button onclick="preview();">Appercu</button></li>
       <li><button onclick="clearC();">Effacer</button></li>
       <li><button onclick="saveContour();">Valider</button></li>
@@ -65,10 +34,14 @@
 
     <div id="canvasDiv">
     </div>
-    <p>
-      <button onclick="preview();">Save</button>
-    </p>
-    <div id="coord">
+   <div id="coord">
+  <footer>
+    <div class="copyright">
+        <p>Sandwich class camp 2015 - Deuxieme edition
+    ETNA (Ecole des Technologies Numeriques Appliquees)</p>
+
+        </div>
+  </footer>
       
     </div>
     <script type="text/javascript" src="behaviour.js"></script>

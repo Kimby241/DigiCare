@@ -93,15 +93,99 @@ function clearRepere () {
 function saveRepere () {
   editContour = true;
   document.getElementById("menu_edit_repere").style.display = "none";
+  document.getElementById("menu_edit_contour").style.display = "inline";
   clearC();
   it = 5;
   curColor = colorGreen;
   curSize = "small";
   drawRep();
+}
 
+function saveContour ()
+{
+  var pos;
+  var deb = false;
+  var fin = false;
+  var min = -1;
+  var max = -1;
+  var nbPix = 0;
+  var nbCm2 = 0
+  var div = document.getElementById("coord");
+  var imgData = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
+    for (var i=0; i< (context.canvas.width * 4); i +=4)
+        {
+          for (var j=0; j< (context.canvas.height * 4); j +=4) 
+          {
+
+            pos = (context.canvas.width * i) + j;
+            if (is_green(imgData.data, pos))
+            {
+              if (!deb)
+                deb = true;
+              else
+              {
+                if (min != -1 && !fin)
+                {
+                  max = pos;
+                  for (var x = min; x < max; x += 4)
+                  {
+                    nbPix++;
+                    imgData.data[x + 0]= 100;
+                    imgData.data[x + 1]= 100;
+                    imgData.data[x + 2]= 100;
+                    imgData.data[x + 3]= 125;
+                  }
+                  fin = true;
+                  min = -1;
+                }
+              }
+            }
+            else
+            {
+              if (deb)
+              {
+                if (fin)
+                {
+                  deb = false;
+                  fin = false;
+                }
+                else
+                {
+                  if (min == -1)
+                    min = pos;
+                }
+              }
+            }
+          }
+          deb = false;
+          fin = false;
+          min = -1;
+        }
+
+    context.putImageData(imgData, 0, 0);
+
+    //On affiche le résultat
+    var paraPx = document.createElement("p");
+    paraPx.appendChild(document.createTextNode("Taille en pixel = " + nbPix));
+    div.appendChild(paraPx);
+    nbCm2 = (nbPix * 4) / repere.surface();
+    var paraCm = document.createElement("p");
+    paraCm.appendChild(document.createTextNode("Taille en cm2 = " + nbCm2));
+    div.appendChild(paraCm);
 }
 
 function clearC()
+{
+  clickX = new Array();
+  clickY = new Array();
+  clickDrag = new Array();
+  clickSize = new Array();
+  clickColor = new Array();
+  clearCanvas();
+  drawRep();
+}
+
+function clearContour()
 {
   clickX = new Array();
   clickY = new Array();
@@ -393,7 +477,15 @@ function is_green (tab, pos)
                  (tab[pos + 3]== 255)));
 }
 
-function SaveResult ()
+function is_selected (tab, pos) 
+{
+  return (((tab[pos + 0] == 200) && 
+                  (tab[pos + 1] == 200) && 
+                 (tab[pos + 2] == 100) && 
+                 (tab[pos + 3]== 125)));
+}
+
+function preview ()
 {
   var pos;
   var deb = false;

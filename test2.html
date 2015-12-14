@@ -6,8 +6,8 @@
       canvas
       {
         border:solid 1px;
-        background-image:url("images/bl.jpg");
-        background-repeat:no-repeat;
+        /*background-image:url("images/bl.jpg");
+        background-repeat:no-repeat;*/
         max-width: 500px;
         background-position: 50% 50%;
       }
@@ -17,11 +17,13 @@
         height: 500px;
       }
 
-      ul#menu_edit_repere li { 
+      ul#menu_edit_repere li, ul#menu_edit_contour li
+      { 
       display : inline;
       padding : 0 0.5em;
       }
-      ul#menu_edit_repere {
+      ul#menu_edit_repere, ul#menu_edit_contour
+      {
       list-style-type : none;
       width: 500px;
       display: none;
@@ -53,10 +55,18 @@
       <li><button onclick="saveRepere();">Valider</button></li>
     </ul>
 
+    <ul id="menu_edit_contour">
+      <li><button onclick="modifContour();">Contour</button></li>
+      <li><button onclick="modifFill();">Remplissage</button></li>
+      <li><button onclick="preview();">Appercu</button></li>
+      <li><button onclick="clearC();">Effacer</button></li>
+      <li><button onclick="saveContour();">Valider</button></li>
+    </ul>
+
     <div id="canvasDiv">
     </div>
     <p>
-      <button onclick="SaveResult();">Save</button>
+      <button onclick="preview();">Save</button>
     </p>
     <div id="coord">
       

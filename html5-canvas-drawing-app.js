@@ -73,7 +73,7 @@ function resourceLoaded()
 /**
 * Creates a canvas element, loads images, adds events, and draws the canvas for the first time.
 */
-function prepareCanvas()
+/*function prepareCanvas()
 {
 	// Create the canvas (Neccessary for IE because it doesn't know what a canvas element is)
 	var canvasDiv = document.getElementById('canvasDiv');
@@ -203,7 +203,7 @@ function prepareCanvas()
 	$('#canvas').mouseleave(function(e){
 		paint = false;
 	});
-}
+}*/
 
 /**
 * Adds a point to the drawing array.
@@ -211,7 +211,7 @@ function prepareCanvas()
 * @param y
 * @param dragging
 */
-function addClick(x, y, dragging)
+/*function addClick(x, y, dragging)
 {
 	clickX.push(x);
 	clickY.push(y);
@@ -219,20 +219,20 @@ function addClick(x, y, dragging)
 	clickColor.push(curColor);
 	clickSize.push(curSize);
 	clickDrag.push(dragging);
-}
+}*/
 
 /**
 * Clears the canvas.
 */
-function clearCanvas()
+/*function clearCanvas()
 {
 	context.clearRect(0, 0, canvasWidth, canvasHeight);
-}
+}*/
 
 /**
 * Redraws the canvas.
 */
-function redraw()
+/*function redraw()
 {
 	// Make sure required resources are loaded before redrawing
 	if(curLoadResNum < totalLoadResources){ return; }
@@ -503,7 +503,7 @@ function redraw()
 	
 	// Draw the outline image
 	context.drawImage(outlineImage, drawingAreaX, drawingAreaY, drawingAreaWidth, drawingAreaHeight);
-}
+}*/
 
 
 /**/

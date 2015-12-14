@@ -26,20 +26,10 @@ var clickColor = new Array();
 /* Ajout variables couleur */
 var curSize = "normal";
 var clickSize = new Array();
-var edit = false;
+var editContour = false;
 
 /* Image de fond */
 var outlineImage = new Image();
-
-/*var x1;
-var x2;
-var x3;
-var x4;
-
-var y1;
-var y2;
-var y3;
-var y4;*/
 
 var editRep = true;
 
@@ -88,6 +78,29 @@ function addClick(x, y, dragging)
   clickColor.push(curColor);
 }
 
+function clearRepere () {
+  clickX = new Array();
+  clickY = new Array();
+  clickDrag = new Array();
+  clickSize = new Array();
+  clickColor = new Array();
+  it = 1;
+  curColor = colorPurple;
+  curSize = "normal";
+  clearCanvas();
+}
+
+function saveRepere () {
+  editContour = true;
+  document.getElementById("menu_edit_repere").style.display = "none";
+  clearC();
+  it = 5;
+  curColor = colorGreen;
+  curSize = "small";
+  drawRep();
+
+}
+
 function clearC()
 {
   clickX = new Array();
@@ -109,7 +122,115 @@ function clearCanvas()
 var it = 1;
 var blocked = 1;
 
-$(document).ready(function() {
+$('#repere').mousedown(function () {
+  var canvasDiv = document.getElementById('canvasDiv');
+    canvas = document.createElement('canvas');
+    canvas.setAttribute('width', canvasWidth);
+    canvas.setAttribute('height', canvasHeight);
+    canvas.setAttribute('id', 'canvas');
+    canvasDiv.appendChild(canvas);
+    if (img.width > img.height)
+    {
+      document.getElementById("canvas").style.backgroundSize = "100% auto";
+    }
+    else
+    {
+      document.getElementById("canvas").style.backgroundSize = "auto 100%";
+    }
+    if(typeof G_vmlCanvasManager != 'undefined') {
+      canvas = G_vmlCanvasManager.initElement(canvas);
+    }
+    context = canvas.getContext("2d");
+
+    // Load images
+    // -----------
+    //outlineImage.src = "images/bl.jpg";
+    outlineImage.onload = function() { 
+        resourceLoaded();
+      };
+    
+
+    // Add mouse events
+    // ----------------
+    $('#canvas').mousedown(function(e){
+    var mouseX = e.pageX - this.offsetLeft;
+    var mouseY = e.pageY - this.offsetTop;
+    
+    paint = true;
+    addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+    
+
+    if (it == 1) 
+      {
+        it++;
+        repere.p1.x = mouseX;
+        repere.p1.y = mouseY;
+        redraw();
+      }
+    else if (it == 2) 
+      {
+        it++;
+        repere.p2.x = mouseX;
+        repere.p2.y = mouseY;
+        redraw();
+      }
+    else if (it == 3) 
+      {
+        it++;
+        repere.p3.x = mouseX;
+        repere.p3.y = mouseY;
+        redraw();
+      }
+    else if (it == 4)
+      {
+        it++;
+        repere.p4.x = mouseX;
+        repere.p4.y = mouseY;
+        var div = document.getElementById("coord");
+        node = document.createTextNode("val = " + repere.surface());
+        para = document.createElement("p");
+        para.appendChild(node);
+        div.appendChild(para);
+        curColor = colorGreen;
+        curSize = "small";
+        redraw();
+        drawRep();
+      }
+    else
+    {
+      redraw();
+      drawRep();
+    }
+    
+    });
+
+    $('#canvas').mousemove(function(e){
+      if(paint && blocked == 0 && editContour == true){
+        if(it > 4 && editContour == true)
+          curSize = "small";
+        addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+        redraw();
+        drawRep();
+      }
+    });
+
+    $('#canvas').mouseup(function(e){
+      if (blocked == 1 && it > 4)
+        blocked = 0;
+      paint = false;
+    });
+
+    $('#canvas').mouseleave(function(e){
+        paint = false;
+    });
+    outlineImage.src = "images/bl.jpg";
+
+    //On fait disparaitre le bouton de chargement Pour l'instant vu qu'on ne traite qu'une image à la fois
+    document.getElementById("repere").style.display = "none";
+    document.getElementById("menu_edit_repere").style.display = "inline";
+});
+
+/*$(document).ready(function() {
     var canvasDiv = document.getElementById('canvasDiv');
     canvas = document.createElement('canvas');
     canvas.setAttribute('width', canvasWidth);
@@ -148,32 +269,31 @@ $(document).ready(function() {
     
 
     if (it == 1) 
-      { //x1 = mouseX; y1 = mouseY; it++;
+      {
         it++;
         repere.p1.x = mouseX;
         repere.p1.y = mouseY;
         redraw();
       }
     else if (it == 2) 
-      { //x2 = mouseX; y2 = mouseY; it++;
+      {
         it++;
         repere.p2.x = mouseX;
         repere.p2.y = mouseY;
         redraw();
       }
     else if (it == 3) 
-      { //x3 = mouseX; y3 = mouseY; it++;
+      {
         it++;
         repere.p3.x = mouseX;
         repere.p3.y = mouseY;
         redraw();
       }
     else if (it == 4)
-      { //x4 = mouseX; y4 = mouseY; it++;
+      {
         it++;
         repere.p4.x = mouseX;
         repere.p4.y = mouseY;
-        //var val1 = Math.abs((((x1 - x3) * (y2 - y4)) - ((x2 - x4) * (y1 - y3))) / 2);
         var div = document.getElementById("coord");
         node = document.createTextNode("val = " + repere.surface());
         para = document.createElement("p");
@@ -212,7 +332,7 @@ $(document).ready(function() {
         paint = false;
     });
     outlineImage.src = "images/bl.jpg";
-});
+});*/
 
 function drawRep() 
 {
@@ -331,4 +451,11 @@ function SaveResult ()
         }
 
     context.putImageData(imgData, 0, 0);
+}
+
+function resourceLoaded()
+{
+  if(++curLoadResNum >= totalLoadResources){
+    redraw();
+  }
 }

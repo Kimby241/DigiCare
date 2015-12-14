@@ -16,6 +16,17 @@
         width: 500px;
         height: 500px;
       }
+
+      ul#menu_edit_repere li { 
+      display : inline;
+      padding : 0 0.5em;
+      }
+      ul#menu_edit_repere {
+      list-style-type : none;
+      width: 500px;
+      display: none;
+      }
+
    </style> 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
     <!--[if IE]><script type="text/javascript" src="excanvas.js"></script><![endif]-->
@@ -37,6 +48,11 @@
       <button onclick="SetLarge();">Large</button>
       <button onclick="SetHuge();">Huge</button>
     </p>
+    <ul id="menu_edit_repere">
+      <li><button onclick="clearRepere();">Corriger</button></li>
+      <li><button onclick="saveRepere();">Valider</button></li>
+    </ul>
+
     <div id="canvasDiv">
     </div>
     <p>
